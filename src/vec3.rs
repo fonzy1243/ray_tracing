@@ -1,5 +1,6 @@
 use std::ops::{Add, Div, Index, IndexMut, Mul, Neg, Sub};
 
+// A 3D vector
 pub struct Vec3 {
     e: [f64; 3],
 }
@@ -31,6 +32,20 @@ impl Vec3 {
 
     pub fn dot(self, v: Vec3) -> f64 {
         self[0] * v[0] + self[1] * v[1] + self[2] * v[2]
+    }
+
+    pub fn cross(self, v: Vec3) -> Vec3 {
+        Vec3 {
+            e: [
+                self[1] * v[2] - self[2] * v[1],
+                self[2] * v[0] - self[0] * v[2],
+                self[0] * v[1] - self[1] * v[0],
+            ],
+        }
+    }
+
+    pub fn unit_vector(self) -> Vec3 {
+        self / self.length()
     }
 }
 
