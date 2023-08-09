@@ -1,6 +1,6 @@
 use std::ops::{Add, Div, Index, IndexMut, Mul, Neg, Sub};
 
-// A 3D vector
+#[derive(Clone, Copy, PartialEq)]
 pub struct Vec3 {
     e: [f64; 3],
 }
@@ -49,17 +49,17 @@ impl Vec3 {
     }
 }
 
-impl Index<i32> for Vec3 {
+impl Index<usize> for Vec3 {
     type Output = f64;
 
-    fn index(&self, index: i32) -> &Self::Output {
-        self.e[index]
+    fn index(&self, index: usize) -> &Self::Output {
+        &self.e[index]
     }
 }
 
-impl IndexMut<i32> for Vec3 {
-    fn index_mut(&mut self, index: i32) -> &mut Self::Output {
-        self.e[index]
+impl IndexMut<usize> for Vec3 {
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        &mut self.e[index]
     }
 }
 
@@ -80,7 +80,7 @@ impl Neg for Vec3 {
 impl Add for Vec3 {
     type Output = Vec3;
 
-    fn add(self, rhs: self) -> Self::Output {
+    fn add(self, rhs: Self) -> Self::Output {
         Vec3 {
             e: [
                 self[0] + rhs[0],
