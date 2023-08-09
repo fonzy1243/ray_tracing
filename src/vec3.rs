@@ -6,7 +6,7 @@ pub struct Vec3 {
 }
 
 impl Vec3 {
-    pub fn new(self, e1: f64, e2: f64, e3: f64) -> Vec3 {
+    pub fn new(e1: f64, e2: f64, e3: f64) -> Self {
         Self { e: [e1, e2, e3] }
     }
 
@@ -169,4 +169,4 @@ impl Div<Vec3> for f64 {
     }
 }
 
-type Point3 = Vec3;
+pub type Point3 = Vec3;
