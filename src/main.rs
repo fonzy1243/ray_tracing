@@ -11,6 +11,8 @@ use crate::vec3::{Point3, Vec3};
 mod ray;
 mod color;
 mod vec3;
+mod hittable;
+mod sphere;
 
 fn hit_sphere(center: Point3, radius: f64, r: Ray) -> f64 {
     let oc = r.origin() - center;
