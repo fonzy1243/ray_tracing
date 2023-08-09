@@ -153,3 +153,5 @@ impl Div<Vec3> for f64 {
         }
     }
 }
+
+type Point3 = Vec3;
