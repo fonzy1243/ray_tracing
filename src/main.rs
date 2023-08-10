@@ -23,7 +23,7 @@ fn main() {
     // Image
     let aspect_ratio = 16. / 9.;
     let image_width = 1080;
-    let samples_per_pixel = 100;
+    let samples_per_pixel = 10;
 
     // World
     let mut world = HittableList::default();

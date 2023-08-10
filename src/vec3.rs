@@ -1,4 +1,5 @@
 use std::ops::{Add, Div, Index, IndexMut, Mul, Neg, Sub};
+use ray_tracing::{random_double, random_double_r};
 
 #[derive(Clone, Copy, PartialEq)]
 pub struct Vec3 {
@@ -34,7 +35,7 @@ impl Vec3 {
         self[0] * v[0] + self[1] * v[1] + self[2] * v[2]
     }
 
-    pub fn cross(self, v: Vec3) -> Vec3 {
+    pub fn cross(self, v: Vec3) -> Self {
         Vec3 {
             e: [
                 self[1] * v[2] - self[2] * v[1],
@@ -44,8 +45,39 @@ impl Vec3 {
         }
     }
 
-    pub fn unit_vector(self) -> Vec3 {
+    pub fn unit_vector(self) -> Self {
         self / self.length()
+    }
+
+    pub fn random_in_unit_sphere() -> Vec3{
+        loop {
+            let p = Vec3::random_range(-1.,1.);
+            if p.length_squared() < 1. {
+                return p
+            }
+        }
+    }
+
+    pub fn random_unit_vector() -> Vec3 {
+        Vec3::random_in_unit_sphere().unit_vector()
+    }
+
+    pub fn random_on_hemisphere(normal: Vec3) -> Vec3 {
+        let on_unit_sphere = Vec3::random_unit_vector();
+        if on_unit_sphere.dot(normal) > 0. {
+            on_unit_sphere
+        }
+        else {
+            -on_unit_sphere
+        }
+    }
+
+    pub fn random(self) -> Self {
+        Self { e: [random_double(), random_double(), random_double()] }
+    }
+
+    pub fn random_range(min: f64, max: f64) -> Self {
+        Self { e: [random_double_r(min, max), random_double_r(min, max), random_double_r(min, max)] }
     }
 }
 
