@@ -4,6 +4,10 @@ use crate::vec3::Vec3;
 
 pub type Color = Vec3;
 
+fn linear_to_gamma(linear_component: f64) -> f64 {
+    linear_component.sqrt()
+}
+
 pub fn write_color(out: &mut dyn Write, pixel_color: Color, samples_per_pixel: i32) {
     let mut r = pixel_color.x();
     let mut g = pixel_color.y();
@@ -14,6 +18,10 @@ pub fn write_color(out: &mut dyn Write, pixel_color: Color, samples_per_pixel: i
     r = scale * r;
     g = scale * g;
     b = scale * b;
+
+    r = linear_to_gamma(r);
+    g = linear_to_gamma(g);
+    b = linear_to_gamma(b);
 
     // Clamp the color components to the valid range [0.0, 0.999].
     let intensity = Interval::new(0.0, 0.999);
