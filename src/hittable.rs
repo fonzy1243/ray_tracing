@@ -13,7 +13,7 @@ impl HitRecord {
      * Sets the hit record normal vector
      * NOTE: outward_normal is assumed to be a unit vector.
      */
-    fn set_face_normal(&mut self, r: Ray, outward_normal: Vec3) {
+    pub fn set_face_normal(&mut self, r: Ray, outward_normal: Vec3) {
         self.front_face = r.direction().dot(outward_normal) < 0f64;
 
         if self.front_face {
