@@ -36,7 +36,7 @@ fn main() {
     // Image
     let aspect_ratio = 16. / 9.;
 
-    let image_width = 400;
+    let image_width = 1080;
     let mut image_height = (image_width as f64 / aspect_ratio) as i32;
 
     if image_height < 1 {
