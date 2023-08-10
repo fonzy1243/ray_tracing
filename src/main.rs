@@ -5,6 +5,7 @@ use ray_tracing::INFINITY;
 use crate::color::{Color, write_color};
 use crate::hittable::{HitRecord, Hittable};
 use crate::hittable_list::HittableList;
+use crate::interval::Interval;
 use crate::ray::Ray;
 use crate::sphere::Sphere;
 use crate::vec3::{Point3, Vec3};
@@ -18,11 +19,12 @@ mod vec3;
 mod hittable;
 mod sphere;
 mod hittable_list;
+mod interval;
 
 fn ray_color(r: Ray, world: &dyn Hittable) -> Color {
     let mut rec = HitRecord::default();
 
-    if world.hit(r, 0., INFINITY, &mut rec) {
+    if world.hit(r, Interval::new(0., INFINITY), &mut rec) {
         return 0.5 * (rec.normal + Color::new(1.,1.,1.))
     }
 

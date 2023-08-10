@@ -1,8 +1,9 @@
 use crate::INFINITY;
 
+#[derive(Clone, Copy, PartialEq)]
 pub struct Interval {
-    min: f64,
-    max: f64
+    pub min: f64,
+    pub max: f64
 }
 
 impl Interval {
@@ -22,5 +23,12 @@ impl Interval {
     }
 }
 
-const EMPTY: Interval = Interval::new(INFINITY, -INFINITY);
-const UNIVERSE: Interval = Interval::new(-INFINITY, INFINITY);
+const EMPTY: Interval = Interval {
+    min: INFINITY,
+    max: -INFINITY,
+};
+
+const UNIVERSE: Interval = Interval {
+    min: -INFINITY,
+    max: INFINITY,
+};
