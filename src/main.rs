@@ -28,7 +28,7 @@ fn main() {
     // Image
     let aspect_ratio = 16. / 9.;
     let image_width = 1080;
-    let samples_per_pixel = 100;
+    let samples_per_pixel = 500;
     let max_depth = 50;
 
     // World
@@ -36,8 +36,8 @@ fn main() {
 
     let material_ground = Lambertian::new(Color::new(0.8,0.8,0.0));
     let material_center = Lambertian::new(Color::new(0.7,0.3,0.3));
-    let material_left = Metal::new(Color::new(0.8,0.8,0.8));
-    let material_right = Metal::new(Color::new(0.8,0.6,0.2));
+    let material_left = Metal::new(Color::new(0.8,0.8,0.8), 0.3);
+    let material_right = Metal::new(Color::new(0.8,0.6,0.2), 1.);
 
     world.add(Box::new(Sphere::new(Point3::new(0.,-100.5,-1.), 100., Rc::new(RefCell::new(material_ground)))));
     world.add(Box::new(Sphere::new(Point3::new(0.,0.,-1.), 0.5, Rc::new(RefCell::new(material_center)))));
