@@ -1,4 +1,4 @@
-use std::ops::{Add, Div, Index, IndexMut, Mul, Neg, Sub};
+use std::ops::{Add, Div, Index, IndexMut, Mul, MulAssign, Neg, Sub};
 use ray_tracing::{random_double, random_double_r};
 
 #[derive(Clone, Copy, PartialEq)]
@@ -29,6 +29,11 @@ impl Vec3 {
 
     pub fn length_squared(self) -> f64 {
         self[0] * self[0] + self[1] * self[1] + self[2] * self[2]
+    }
+
+    pub fn near_zero(self) -> bool {
+        let s = 1e-8;
+        (self[0].abs() < s) && (self[1].abs() < s) && (self[2].abs() < s)
     }
 
     pub fn dot(self, v: Vec3) -> f64 {
@@ -70,6 +75,10 @@ impl Vec3 {
         else {
             -on_unit_sphere
         }
+    }
+
+    pub fn reflect(v: Vec3, n: Vec3) -> Vec3 {
+        v - 2f64 * v.dot(n) * n
     }
 
     pub fn random(self) -> Self {
@@ -138,10 +147,12 @@ impl Sub for Vec3 {
 }
 
 impl Mul for Vec3 {
-    type Output = f64;
+    type Output = Vec3;
 
     fn mul(self, rhs: Self) -> Self::Output {
-        self[0] * rhs[0] + self[1] * rhs[1] + self[2] * rhs[2]
+        Self {
+            e: [self[0] * rhs[0], self[1] * rhs[1], self[2] * rhs[2]]
+        }
     }
 }
 
@@ -156,6 +167,14 @@ impl Mul<f64> for Vec3 {
                 self[2] * rhs,
             ],
         }
+    }
+}
+
+impl MulAssign<f64> for Vec3 {
+    fn mul_assign(&mut self, rhs: f64) {
+        self[0] *= rhs;
+        self[1] *= rhs;
+        self[2] *= rhs;
     }
 }
 

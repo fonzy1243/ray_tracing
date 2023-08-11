@@ -1,20 +1,25 @@
+use std::cell::RefCell;
+use std::rc::Rc;
 use crate::interval::Interval;
+use crate::material::{Lambertian, Material};
 use crate::ray::Ray;
 use crate::vec3::{Point3, Vec3};
 
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone)]
 pub struct HitRecord {
     pub(crate) p: Point3,
     pub(crate) normal: Vec3,
+    pub(crate) mat: Rc<RefCell<dyn Material>>,
     pub(crate) t: f64,
     pub(crate) front_face: bool,
 }
 
 impl HitRecord {
-    pub fn new(p: Point3, normal: Vec3, t: f64, front_face: bool) -> Self {
+    pub fn new(p: Point3, normal: Vec3, mat:Rc<RefCell<dyn Material>>, t: f64, front_face: bool) -> Self {
         HitRecord {
             p,
             normal,
+            mat,
             t,
             front_face,
         }
@@ -40,6 +45,7 @@ impl Default for HitRecord {
         Self {
             p: Point3::new(0., 0., 0.,),
             normal: Vec3::new(0., 0., 0.),
+            mat: Rc::new(RefCell::new(Lambertian::default())),
             t: 0.,
             front_face: false,
         }
