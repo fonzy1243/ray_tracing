@@ -91,11 +91,17 @@ impl Camera {
         }
 
         if world.hit(r, Interval::new(0.001, INFINITY), &mut rec) {
-            let direction = rec.normal + Vec3::random_unit_vector();
-            return 0.5 * Camera::ray_color(Ray::new(rec.p, direction), depth - 1, world)
+            let mut scattered = Ray::new(Point3::new(0.,0.,0.,), Vec3::new(0.,0.,0.));
+            let mut attenuation = Color::new(0.,0.,0.);
+
+            if rec.mat.borrow_mut().scatter(&r, &rec, &mut attenuation, &mut scattered) {
+                return attenuation * Self::ray_color(scattered, depth - 1, world);
+            }
+
+            return Color::new(0.,0.,0.)
         }
 
-        let unit_direction:Vec3 = r.direction().unit_vector();
+        let unit_direction: Vec3 = r.direction().unit_vector();
         let a = 0.5 * (unit_direction.y() + 1.0);
 
         (1.0 - a) * Color::new(1.0, 1.0, 1.0) + a * Color::new(0.5, 0.7, 1.0)
