@@ -74,6 +74,9 @@ impl Dielectric {
         Self { ir: index_of_refraction }
     }
 
+    /**
+     * Schlick's approximation for reflectance.
+     */
     fn reflectance(cosine: f64, ref_idx: f64) -> f64 {
         let mut r0: f64 = (1f64 - ref_idx) / (1f64 + ref_idx);
         r0 = r0.powi(2);
