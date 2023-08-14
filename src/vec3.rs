@@ -1,6 +1,6 @@
+use ray_tracing::{random_double, random_double_r};
 use std::cmp::min;
 use std::ops::{Add, Div, Index, IndexMut, Mul, MulAssign, Neg, Sub};
-use ray_tracing::{random_double, random_double_r};
 
 #[derive(Clone, Copy, PartialEq)]
 pub struct Vec3 {
@@ -55,11 +55,20 @@ impl Vec3 {
         self / self.length()
     }
 
-    pub fn random_in_unit_sphere() -> Vec3{
+    pub fn random_in_unit_disk() -> Vec3 {
         loop {
-            let p = Vec3::random_range(-1.,1.);
+            let p = Vec3::new(random_double_r(-1., 1.), random_double_r(-1., 1.), 0f64);
             if p.length_squared() < 1. {
-                return p
+                return p;
+            }
+        }
+    }
+
+    pub fn random_in_unit_sphere() -> Vec3 {
+        loop {
+            let p = Vec3::random_range(-1., 1.);
+            if p.length_squared() < 1. {
+                return p;
             }
         }
     }
@@ -72,8 +81,7 @@ impl Vec3 {
         let on_unit_sphere = Vec3::random_unit_vector();
         if on_unit_sphere.dot(normal) > 0. {
             on_unit_sphere
-        }
-        else {
+        } else {
             -on_unit_sphere
         }
     }
@@ -90,12 +98,20 @@ impl Vec3 {
         r_out_perp + r_out_parallel
     }
 
-    pub fn random(self) -> Self {
-        Self { e: [random_double(), random_double(), random_double()] }
+    pub fn random() -> Self {
+        Self {
+            e: [random_double(), random_double(), random_double()],
+        }
     }
 
     pub fn random_range(min: f64, max: f64) -> Self {
-        Self { e: [random_double_r(min, max), random_double_r(min, max), random_double_r(min, max)] }
+        Self {
+            e: [
+                random_double_r(min, max),
+                random_double_r(min, max),
+                random_double_r(min, max),
+            ],
+        }
     }
 }
 
@@ -118,11 +134,7 @@ impl Neg for Vec3 {
 
     fn neg(self) -> Self::Output {
         Vec3 {
-            e: [
-                -self[0],
-                -self[1],
-                -self[2],
-            ],
+            e: [-self[0], -self[1], -self[2]],
         }
     }
 }
@@ -132,11 +144,7 @@ impl Add for Vec3 {
 
     fn add(self, rhs: Self) -> Self::Output {
         Vec3 {
-            e: [
-                self[0] + rhs[0],
-                self[1] + rhs[1],
-                self[2] + rhs[2],
-            ],
+            e: [self[0] + rhs[0], self[1] + rhs[1], self[2] + rhs[2]],
         }
     }
 }
@@ -146,11 +154,7 @@ impl Sub for Vec3 {
 
     fn sub(self, rhs: Self) -> Self::Output {
         Vec3 {
-            e: [
-                self[0] - rhs[0],
-                self[1] - rhs[1],
-                self[2] - rhs[2],
-            ],
+            e: [self[0] - rhs[0], self[1] - rhs[1], self[2] - rhs[2]],
         }
     }
 }
@@ -160,7 +164,7 @@ impl Mul for Vec3 {
 
     fn mul(self, rhs: Self) -> Self::Output {
         Self {
-            e: [self[0] * rhs[0], self[1] * rhs[1], self[2] * rhs[2]]
+            e: [self[0] * rhs[0], self[1] * rhs[1], self[2] * rhs[2]],
         }
     }
 }
@@ -170,11 +174,7 @@ impl Mul<f64> for Vec3 {
 
     fn mul(self, rhs: f64) -> Self::Output {
         Vec3 {
-            e: [
-                self[0] * rhs,
-                self[1] * rhs,
-                self[2] * rhs,
-            ],
+            e: [self[0] * rhs, self[1] * rhs, self[2] * rhs],
         }
     }
 }
@@ -192,11 +192,7 @@ impl Mul<Vec3> for f64 {
 
     fn mul(self, rhs: Vec3) -> Self::Output {
         Vec3 {
-            e: [
-                self * rhs[0],
-                self * rhs[1],
-                self * rhs[2],
-            ],
+            e: [self * rhs[0], self * rhs[1], self * rhs[2]],
         }
     }
 }
@@ -206,11 +202,7 @@ impl Div<f64> for Vec3 {
 
     fn div(self, rhs: f64) -> Self::Output {
         Vec3 {
-            e: [
-                self[0] / rhs,
-                self[1] / rhs,
-                self[2] / rhs,
-            ],
+            e: [self[0] / rhs, self[1] / rhs, self[2] / rhs],
         }
     }
 }
@@ -220,11 +212,7 @@ impl Div<Vec3> for f64 {
 
     fn div(self, rhs: Vec3) -> Self::Output {
         Vec3 {
-            e: [
-                self / rhs[0],
-                self / rhs[1],
-                self / rhs[2],
-            ],
+            e: [self / rhs[0], self / rhs[1], self / rhs[2]],
         }
     }
 }

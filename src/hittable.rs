@@ -1,9 +1,9 @@
-use std::cell::RefCell;
-use std::rc::Rc;
 use crate::interval::Interval;
 use crate::material::{Lambertian, Material};
 use crate::ray::Ray;
 use crate::vec3::{Point3, Vec3};
+use std::cell::RefCell;
+use std::rc::Rc;
 
 #[derive(Clone)]
 pub struct HitRecord {
@@ -15,7 +15,13 @@ pub struct HitRecord {
 }
 
 impl HitRecord {
-    pub fn new(p: Point3, normal: Vec3, mat:Rc<RefCell<dyn Material>>, t: f64, front_face: bool) -> Self {
+    pub fn new(
+        p: Point3,
+        normal: Vec3,
+        mat: Rc<RefCell<dyn Material>>,
+        t: f64,
+        front_face: bool,
+    ) -> Self {
         HitRecord {
             p,
             normal,
@@ -33,8 +39,7 @@ impl HitRecord {
 
         if self.front_face {
             self.normal = outward_normal
-        }
-        else {
+        } else {
             self.normal = -outward_normal
         }
     }
@@ -43,7 +48,7 @@ impl HitRecord {
 impl Default for HitRecord {
     fn default() -> Self {
         Self {
-            p: Point3::new(0., 0., 0.,),
+            p: Point3::new(0., 0., 0.),
             normal: Vec3::new(0., 0., 0.),
             mat: Rc::new(RefCell::new(Lambertian::default())),
             t: 0.,

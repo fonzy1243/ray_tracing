@@ -1,21 +1,25 @@
-use std::cell::RefCell;
-use std::rc::Rc;
 use crate::hittable::{HitRecord, Hittable};
 use crate::interval::Interval;
 use crate::material::Material;
 use crate::ray::Ray;
 use crate::vec3::Point3;
+use std::cell::RefCell;
+use std::rc::Rc;
 
 #[derive(Clone)]
 pub struct Sphere {
     center: Point3,
     radius: f64,
-    mat: Rc<RefCell<dyn Material>>
+    mat: Rc<RefCell<dyn Material>>,
 }
 
 impl Sphere {
     pub(crate) fn new(center: Point3, radius: f64, mat: Rc<RefCell<dyn Material>>) -> Self {
-        Self { center, radius, mat }
+        Self {
+            center,
+            radius,
+            mat,
+        }
     }
 }
 
@@ -30,7 +34,7 @@ impl Hittable for Sphere {
         let discriminant = half_b.powi(2) - a * c;
 
         if discriminant < 0. {
-            return false
+            return false;
         }
 
         let sqrtd = discriminant.sqrt();
