@@ -1,6 +1,6 @@
-use std::io::Write;
 use crate::interval::Interval;
 use crate::vec3::Vec3;
+use std::io::Write;
 
 pub type Color = Vec3;
 
@@ -30,6 +30,12 @@ pub fn write_color(out: &mut dyn Write, pixel_color: Color, samples_per_pixel: i
     b = intensity.clamp(b);
 
     // Write the translated [0,255] value of each color component.
-    writeln!(out, "{} {} {}", (256.0 * r) as i32, (256.0 * g) as i32, (256.0 * b) as i32)
-        .expect("TODO: panic message");
+    writeln!(
+        out,
+        "{} {} {}",
+        (256.0 * r) as i32,
+        (256.0 * g) as i32,
+        (256.0 * b) as i32
+    )
+    .expect("TODO: panic message");
 }

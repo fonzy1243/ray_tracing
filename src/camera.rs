@@ -137,7 +137,10 @@ impl Camera {
             let mut scattered = Ray::new(Point3::new(0., 0., 0.), Vec3::new(0., 0., 0.));
             let mut attenuation = Color::new(0., 0., 0.);
 
-            if rec.mat.borrow_mut().scatter(&r, &rec, &mut attenuation, &mut scattered)
+            if rec
+                .mat
+                .borrow_mut()
+                .scatter(&r, &rec, &mut attenuation, &mut scattered)
             {
                 return attenuation * Self::ray_color(scattered, depth - 1, world);
             }

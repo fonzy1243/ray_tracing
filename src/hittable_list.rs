@@ -19,7 +19,7 @@ impl HittableList {
 impl Default for HittableList {
     fn default() -> Self {
         Self {
-            objects: Vec::new()
+            objects: Vec::new(),
         }
     }
 }
