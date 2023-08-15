@@ -9,7 +9,7 @@ use std::rc::Rc;
 pub struct HitRecord {
     pub(crate) p: Point3,
     pub(crate) normal: Vec3,
-    pub(crate) mat: Rc<RefCell<dyn Material>>,
+    pub(crate) mat: Rc<dyn Material>,
     pub(crate) t: f64,
     pub(crate) front_face: bool,
 }
@@ -18,7 +18,7 @@ impl HitRecord {
     pub fn new(
         p: Point3,
         normal: Vec3,
-        mat: Rc<RefCell<dyn Material>>,
+        mat: Rc<dyn Material>,
         t: f64,
         front_face: bool,
     ) -> Self {
@@ -50,7 +50,7 @@ impl Default for HitRecord {
         Self {
             p: Point3::new(0., 0., 0.),
             normal: Vec3::new(0., 0., 0.),
-            mat: Rc::new(RefCell::new(Lambertian::default())),
+            mat: Rc::new(Lambertian::default()),
             t: 0.,
             front_face: false,
         }

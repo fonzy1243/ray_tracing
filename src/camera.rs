@@ -139,7 +139,6 @@ impl Camera {
 
             if rec
                 .mat
-                .borrow_mut()
                 .scatter(&r, &rec, &mut attenuation, &mut scattered)
             {
                 return attenuation * Self::ray_color(scattered, depth - 1, world);

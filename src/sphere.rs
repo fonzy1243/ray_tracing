@@ -10,11 +10,11 @@ use std::rc::Rc;
 pub struct Sphere {
     center: Point3,
     radius: f64,
-    mat: Rc<RefCell<dyn Material>>,
+    mat: Rc<dyn Material>,
 }
 
 impl Sphere {
-    pub(crate) fn new(center: Point3, radius: f64, mat: Rc<RefCell<dyn Material>>) -> Self {
+    pub(crate) fn new(center: Point3, radius: f64, mat: Rc<dyn Material>) -> Self {
         Self {
             center,
             radius,
