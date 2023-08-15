@@ -8,9 +8,7 @@ use crate::vec3::{Point3, Vec3};
 use ray_tracing::{random_double, random_double_r, INFINITY, PI};
 use std::io::Write;
 use std::ops::{Div, Sub};
-use std::rc::Rc;
 use std::sync::Arc;
-use std::sync::mpsc::Sender;
 
 // Based on the book "Ray Tracing in One Weekend": https://raytracing.github.io/books/RayTracingInOneWeekend.html
 // and written in Rust
