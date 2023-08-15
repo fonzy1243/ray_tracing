@@ -3,18 +3,17 @@ use crate::interval::Interval;
 use crate::material::Material;
 use crate::ray::Ray;
 use crate::vec3::Point3;
-use std::cell::RefCell;
-use std::rc::Rc;
+use std::sync::Arc;
 
 #[derive(Clone)]
 pub struct Sphere {
     center: Point3,
     radius: f64,
-    mat: Rc<dyn Material>,
+    mat: Arc<dyn Material + Send>,
 }
 
 impl Sphere {
-    pub(crate) fn new(center: Point3, radius: f64, mat: Rc<dyn Material>) -> Self {
+    pub(crate) fn new(center: Point3, radius: f64, mat: Arc<dyn Material + Send>) -> Self {
         Self {
             center,
             radius,

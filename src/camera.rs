@@ -5,7 +5,7 @@ use crate::ray::Ray;
 use crate::vec3::{Point3, Vec3};
 use ray_tracing::{degrees_to_radians, random_double, INFINITY};
 use std::io;
-use std::io::Write;
+use rayon::prelude::*;
 
 #[derive(Clone, Copy, PartialEq)]
 pub struct Camera {
@@ -73,17 +73,24 @@ impl Camera {
 
         print!("P3\n{} {}\n255\n", self.image_width, self.image_height);
 
-        let mut stdout = io::stdout();
+        let mut stdout = io::stdout().lock();
 
-        for j in 0..self.image_height {
+        let pixel_colors: Vec<Vec<Color>> = (0..self.image_height).into_par_iter().map(|j| {
             let remaining = self.image_height - j;
             eprintln!("\rScanlines remaining: {remaining}");
-            for i in 0..self.image_width {
-                let mut pixel_color = Color::new(0., 0., 0.);
+            let row_colors: Vec<Color> = (0..self.image_width).into_par_iter().map(|i| {
+                let mut pixel_color: Color = Color::new(0., 0., 0.);
                 for _sample in 0..self.samples_per_pixel {
                     let r = self.get_ray(i, j);
                     pixel_color = pixel_color + Camera::ray_color(r, self.max_depth, world);
                 }
+                pixel_color
+            }).collect();
+            row_colors
+        }).collect();
+
+        for row in pixel_colors {
+            for pixel_color in row {
                 write_color(&mut stdout, pixel_color, self.samples_per_pixel);
             }
         }

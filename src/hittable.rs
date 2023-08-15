@@ -4,12 +4,13 @@ use crate::ray::Ray;
 use crate::vec3::{Point3, Vec3};
 use std::cell::RefCell;
 use std::rc::Rc;
+use std::sync::Arc;
 
 #[derive(Clone)]
 pub struct HitRecord {
     pub(crate) p: Point3,
     pub(crate) normal: Vec3,
-    pub(crate) mat: Rc<dyn Material>,
+    pub(crate) mat: Arc<dyn Material + Send>,
     pub(crate) t: f64,
     pub(crate) front_face: bool,
 }
@@ -18,7 +19,7 @@ impl HitRecord {
     pub fn new(
         p: Point3,
         normal: Vec3,
-        mat: Rc<dyn Material>,
+        mat: Arc<dyn Material + Send>,
         t: f64,
         front_face: bool,
     ) -> Self {
@@ -50,13 +51,13 @@ impl Default for HitRecord {
         Self {
             p: Point3::new(0., 0., 0.),
             normal: Vec3::new(0., 0., 0.),
-            mat: Rc::new(Lambertian::default()),
+            mat: Arc::new(Lambertian::default()),
             t: 0.,
             front_face: false,
         }
     }
 }
 
-pub trait Hittable {
+pub trait Hittable: Sync {
     fn hit(&self, r: Ray, ray_t: Interval, rec: &mut HitRecord) -> bool;
 }
