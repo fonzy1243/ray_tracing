@@ -2,7 +2,7 @@ use ray_tracing::{random_double, random_double_r};
 use std::cmp::min;
 use std::ops::{Add, Div, Index, IndexMut, Mul, MulAssign, Neg, Sub};
 
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, PartialEq, Default)]
 pub struct Vec3 {
     e: [f64; 3],
 }

@@ -6,7 +6,6 @@ use crate::material::{Dielectric, Lambertian, Material, Metal};
 use crate::sphere::Sphere;
 use crate::vec3::{Point3, Vec3};
 use ray_tracing::{random_double, random_double_r, INFINITY, PI};
-use std::cell::RefCell;
 use std::io::Write;
 use std::ops::{Div, Sub};
 use std::rc::Rc;
