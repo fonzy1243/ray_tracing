@@ -4,8 +4,8 @@ use crate::interval::Interval;
 use crate::ray::Ray;
 use crate::vec3::{Point3, Vec3};
 use ray_tracing::{degrees_to_radians, random_double, INFINITY};
-use std::io;
 use rayon::prelude::*;
+use std::io;
 
 #[derive(Clone, Copy, PartialEq)]
 pub struct Camera {
@@ -75,19 +75,25 @@ impl Camera {
 
         let mut stdout = io::stdout().lock();
 
-        let pixel_colors: Vec<Vec<Color>> = (0..self.image_height).into_par_iter().map(|j| {
-            let remaining = self.image_height - j;
-            eprintln!("\rScanlines remaining: {remaining}");
-            let row_colors: Vec<Color> = (0..self.image_width).into_par_iter().map(|i| {
-                let mut pixel_color: Color = Color::new(0., 0., 0.);
-                for _sample in 0..self.samples_per_pixel {
-                    let r = self.get_ray(i, j);
-                    pixel_color = pixel_color + Camera::ray_color(r, self.max_depth, world);
-                }
-                pixel_color
-            }).collect();
-            row_colors
-        }).collect();
+        let pixel_colors: Vec<Vec<Color>> = (0..self.image_height)
+            .into_par_iter()
+            .map(|j| {
+                let remaining = self.image_height - j;
+                eprintln!("\rScanlines remaining: {remaining}");
+                let row_colors: Vec<Color> = (0..self.image_width)
+                    .into_par_iter()
+                    .map(|i| {
+                        let mut pixel_color: Color = Color::new(0., 0., 0.);
+                        for _sample in 0..self.samples_per_pixel {
+                            let r = self.get_ray(i, j);
+                            pixel_color = pixel_color + Camera::ray_color(r, self.max_depth, world);
+                        }
+                        pixel_color
+                    })
+                    .collect();
+                row_colors
+            })
+            .collect();
 
         for row in pixel_colors {
             for pixel_color in row {
@@ -144,10 +150,7 @@ impl Camera {
             let mut scattered = Ray::new(Point3::new(0., 0., 0.), Vec3::new(0., 0., 0.));
             let mut attenuation = Color::new(0., 0., 0.);
 
-            if rec
-                .mat
-                .scatter(&r, &rec, &mut attenuation, &mut scattered)
-            {
+            if rec.mat.scatter(&r, &rec, &mut attenuation, &mut scattered) {
                 return attenuation * Self::ray_color(scattered, depth - 1, world);
             }
 
@@ -170,9 +173,11 @@ impl Camera {
         } else {
             self.defocus_disk_sample()
         };
-        let ray_direction = pixel_sample - ray_origin;
 
-        Ray::new(ray_origin, ray_direction)
+        let ray_direction = pixel_sample - ray_origin;
+        let ray_time = random_double();
+
+        Ray::new_with_time(ray_origin, ray_direction, ray_time)
     }
 
     fn defocus_disk_sample(self) -> Point3 {

@@ -5,6 +5,8 @@ use crate::ray::Ray;
 use crate::vec3::Point3;
 use std::sync::Arc;
 
+// TODO: Chapter 2.4 Add Moving Spheres
+
 #[derive(Clone)]
 pub struct Sphere {
     center: Point3,
