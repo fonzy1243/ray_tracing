@@ -2,24 +2,47 @@ use crate::hittable::{HitRecord, Hittable};
 use crate::interval::Interval;
 use crate::material::Material;
 use crate::ray::Ray;
-use crate::vec3::Point3;
+use crate::vec3::{Point3, Vec3};
 use std::sync::Arc;
 
 // TODO: Chapter 2.4 Add Moving Spheres
 
 #[derive(Clone)]
 pub struct Sphere {
-    center: Point3,
+    center1: Point3,
     radius: f64,
     mat: Arc<dyn Material + Send>,
+    is_moving: bool,
+    center_vec: Vec3,
 }
 
 impl Sphere {
-    pub(crate) fn new(center: Point3, radius: f64, mat: Arc<dyn Material + Send>) -> Self {
+    pub(crate) fn new_stationary(
+        center: Point3,
+        radius: f64,
+        mat: Arc<dyn Material + Send>,
+    ) -> Self {
         Self {
-            center,
+            center1: center,
             radius,
             mat,
+            is_moving: false,
+            center_vec: Vec3::default(),
+        }
+    }
+
+    pub(crate) fn new_moving(
+        center: Point3,
+        center2: Point3,
+        radius: f64,
+        mat: Arc<dyn Material + Send>,
+    ) -> Self {
+        Self {
+            center1,
+            radius,
+            mat,
+            is_moving: true,
+            center_vec: center2 - center1,
         }
     }
 }
