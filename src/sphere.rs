@@ -17,11 +17,7 @@ pub struct Sphere {
 }
 
 impl Sphere {
-    pub(crate) fn new_stationary(
-        center: Point3,
-        radius: f64,
-        mat: Arc<dyn Material + Send>,
-    ) -> Self {
+    pub(crate) fn new(center: Point3, radius: f64, mat: Arc<dyn Material + Send>) -> Self {
         Self {
             center1: center,
             radius,
@@ -42,7 +38,7 @@ impl Sphere {
             radius,
             mat,
             is_moving: true,
-            center_vec: center2 - center1,
+            center_vec: center2 - center,
         }
     }
 }
