@@ -13,6 +13,7 @@ use std::sync::Arc;
 // Based on the book "Ray Tracing in One Weekend": https://raytracing.github.io/books/RayTracingInOneWeekend.html
 // and written in Rust
 
+mod aabb;
 mod camera;
 mod color;
 mod hittable;

@@ -1,7 +1,7 @@
 use crate::INFINITY;
 use std::cmp::min;
 
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, Default, PartialEq)]
 pub struct Interval {
     pub min: f64,
     pub max: f64,
