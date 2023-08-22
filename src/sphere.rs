@@ -34,18 +34,28 @@ impl Sphere {
         mat: Arc<dyn Material + Send>,
     ) -> Self {
         Self {
-            center1,
+            center1: center,
             radius,
             mat,
             is_moving: true,
             center_vec: center2 - center,
         }
     }
+
+    fn center(&self, time: f64) -> Point3 {
+        self.center1 + time * self.center_vec
+    }
 }
 
 impl Hittable for Sphere {
     fn hit(&self, r: Ray, ray_t: Interval, rec: &mut HitRecord) -> bool {
-        let oc = r.origin() - self.center;
+        let center: Point3 = if self.is_moving {
+            self.center(r.time())
+        } else {
+            self.center1
+        };
+
+        let oc = r.origin() - center;
 
         let a = r.direction().length_squared();
         let half_b = oc.dot(r.direction());
@@ -71,7 +81,7 @@ impl Hittable for Sphere {
         rec.t = root;
         rec.p = r.at(rec.t);
 
-        let outward_normal = (rec.p - self.center) / self.radius;
+        let outward_normal = (rec.p - center) / self.radius;
         rec.set_face_normal(r, outward_normal);
         rec.mat = self.mat.clone();
 
