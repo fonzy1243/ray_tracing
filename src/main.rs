@@ -29,7 +29,7 @@ fn main() {
     // Image
     let aspect_ratio = 16. / 9.;
     let image_width = 1200;
-    let samples_per_pixel = 500;
+    let samples_per_pixel = 100;
     let max_depth = 50;
 
     // World
@@ -52,8 +52,10 @@ fn main() {
             );
 
             if (center - Point3::new(4., 0.2, 0.)).length() > 0.9 {
+                let mut center2: Option<Vec3> = None;
                 let sphere_material: Arc<dyn Material + Send> = if choose_mat < 0.8 {
                     let albedo = Color::random() * Color::random();
+                    center2 = Some(center + Vec3::new(0., random_double_r(0., 0.5), 0.));
                     Arc::new(Lambertian::new(albedo))
                 } else if choose_mat < 0.95 {
                     let albedo = Color::random_range(0.5, 1.);
@@ -62,7 +64,17 @@ fn main() {
                 } else {
                     Arc::new(Dielectric::new(1.5))
                 };
-                world.add(Box::new(Sphere::new(center, 0.2, sphere_material)))
+
+                if choose_mat < 0.8 {
+                    world.add(Box::new(Sphere::new_moving(
+                        center,
+                        center2.unwrap_or_default(),
+                        0.2,
+                        sphere_material,
+                    )))
+                } else {
+                    world.add(Box::new(Sphere::new(center, 0.2, sphere_material)))
+                }
             }
         }
     }
