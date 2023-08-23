@@ -20,13 +20,15 @@ pub struct Sphere {
 
 impl Sphere {
     pub(crate) fn new(center: Point3, radius: f64, mat: Arc<dyn Material + Send>) -> Self {
+        let rvec = Vec3::new(radius, radius, radius);
+
         Self {
             center1: center,
             radius,
             mat,
             is_moving: false,
             center_vec: Vec3::default(),
-            bbox: AABB::default(),
+            bbox: AABB::new_from_points(center - rvec, center + rvec),
         }
     }
 
@@ -36,13 +38,17 @@ impl Sphere {
         radius: f64,
         mat: Arc<dyn Material + Send>,
     ) -> Self {
+        let rvec = Vec3::new(radius, radius, radius);
+        let box1 = AABB::new_from_points(center - rvec, center + rvec);
+        let box2 = AABB::new_from_points(center2 - rvec, center2 + rvec);
+
         Self {
             center1: center,
             radius,
             mat,
             is_moving: true,
             center_vec: center2 - center,
-            bbox: AABB::default(),
+            bbox: AABB::aabb(box1, box2),
         }
     }
 
