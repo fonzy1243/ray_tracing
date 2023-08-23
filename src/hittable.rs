@@ -1,9 +1,8 @@
+use crate::aabb::*;
 use crate::interval::Interval;
 use crate::material::{Lambertian, Material};
 use crate::ray::Ray;
 use crate::vec3::{Point3, Vec3};
-use std::cell::RefCell;
-use std::rc::Rc;
 use std::sync::Arc;
 
 #[derive(Clone)]
@@ -60,4 +59,6 @@ impl Default for HitRecord {
 
 pub trait Hittable: Sync {
     fn hit(&self, r: Ray, ray_t: Interval, rec: &mut HitRecord) -> bool;
+
+    fn bounding_box(&self) -> AABB;
 }

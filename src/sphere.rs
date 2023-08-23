@@ -1,3 +1,4 @@
+use crate::aabb::*;
 use crate::hittable::{HitRecord, Hittable};
 use crate::interval::Interval;
 use crate::material::Material;
@@ -14,6 +15,7 @@ pub struct Sphere {
     mat: Arc<dyn Material + Send>,
     is_moving: bool,
     center_vec: Vec3,
+    bbox: AABB,
 }
 
 impl Sphere {
@@ -24,6 +26,7 @@ impl Sphere {
             mat,
             is_moving: false,
             center_vec: Vec3::default(),
+            bbox: AABB::default(),
         }
     }
 
@@ -39,6 +42,7 @@ impl Sphere {
             mat,
             is_moving: true,
             center_vec: center2 - center,
+            bbox: AABB::default(),
         }
     }
 
@@ -86,5 +90,9 @@ impl Hittable for Sphere {
         rec.mat = self.mat.clone();
 
         true
+    }
+
+    fn bounding_box(&self) -> AABB {
+        self.bbox
     }
 }
