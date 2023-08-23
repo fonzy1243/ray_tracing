@@ -66,9 +66,9 @@ impl AABB {
 
     pub fn aabb(box0: AABB, box1: AABB) -> AABB {
         Self {
-            x: Interval::new(box0.x, box1.x),
-            y: Interval::new(box0.y, box1.y),
-            z: Interval::new(box0.z, box1.z),
+            x: Interval::new_from_intervals(box0.x, box1.x),
+            y: Interval::new_from_intervals(box0.y, box1.y),
+            z: Interval::new_from_intervals(box0.z, box1.z),
         }
     }
 }

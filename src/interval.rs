@@ -12,6 +12,13 @@ impl Interval {
         Self { min, max }
     }
 
+    pub fn new_from_intervals(a: Interval, b: Interval) -> Self {
+        Self {
+            min: a.min.min(b.min),
+            max: a.max.max(b.max),
+        }
+    }
+
     pub fn contains(self, x: f64) -> bool {
         self.min <= x && x <= self.max
     }
