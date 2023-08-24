@@ -1,6 +1,7 @@
 use crate::color::Color;
 use crate::hittable::HitRecord;
 use crate::ray::Ray;
+use crate::texture::Texture;
 use crate::vec3::Vec3;
 use ray_tracing::random_double;
 
@@ -14,26 +15,18 @@ pub trait Material: Sync {
     ) -> bool;
 }
 
-#[derive(Clone, Copy)]
-pub struct Lambertian {
-    albedo: Color,
+#[derive(Clone, Copy, Default)]
+pub struct Lambertian<T: Texture> {
+    albedo: T,
 }
 
-impl Lambertian {
-    pub fn new(a: Color) -> Self {
+impl<T: Texture> Lambertian<T> {
+    pub fn new(a: T) -> Self {
         Self { albedo: a }
     }
 }
 
-impl Default for Lambertian {
-    fn default() -> Self {
-        Self {
-            albedo: Color::new(0., 0., 0.),
-        }
-    }
-}
-
-impl Material for Lambertian {
+impl<T: Texture> Material for Lambertian<T> {
     fn scatter(
         &self,
         r_in: &Ray,
@@ -49,7 +42,7 @@ impl Material for Lambertian {
         }
 
         *scattered = Ray::new_with_time(rec.p, scatter_direction, r_in.time());
-        *attenuation = self.albedo;
+        *attenuation = self.albedo.value(rec.u, rec.v, rec.p);
         true
     }
 }

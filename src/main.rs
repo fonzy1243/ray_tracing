@@ -5,10 +5,9 @@ use crate::hittable::Hittable;
 use crate::hittable_list::HittableList;
 use crate::material::{Dielectric, Lambertian, Material, Metal};
 use crate::sphere::Sphere;
+use crate::texture::*;
 use crate::vec3::{Point3, Vec3};
 use ray_tracing::{random_double, random_double_r, INFINITY, PI};
-use std::io::Write;
-use std::ops::{Div, Sub};
 use std::sync::Arc;
 
 // Based on the book "Ray Tracing in One Weekend": https://raytracing.github.io/books/RayTracingInOneWeekend.html
@@ -24,6 +23,7 @@ mod interval;
 mod material;
 mod ray;
 mod sphere;
+mod texture;
 mod vec3;
 
 fn main() {
@@ -36,7 +36,9 @@ fn main() {
     // World
     let mut world = HittableList::default();
 
-    let ground_material = Lambertian::new(Color::new(0.5, 0.5, 0.5));
+    let checker =
+        CheckerTexture::new_from_colors(0.32, Color::new(0.2, 0.3, 0.1), Color::new(0.9, 0.9, 0.9));
+    let ground_material = Lambertian::new(checker);
     world.add(Box::new(Sphere::new(
         Point3::new(0., -1000., 0.),
         1000.,
@@ -57,7 +59,7 @@ fn main() {
                 let sphere_material: Arc<dyn Material + Send> = if choose_mat < 0.8 {
                     let albedo = Color::random() * Color::random();
                     center2 = Some(center + Vec3::new(0., random_double_r(0., 0.5), 0.));
-                    Arc::new(Lambertian::new(albedo))
+                    Arc::new(Lambertian::new(SolidColor::new(albedo)))
                 } else if choose_mat < 0.95 {
                     let albedo = Color::random_range(0.5, 1.);
                     let fuzz = random_double_r(0f64, 0.5);
@@ -87,7 +89,7 @@ fn main() {
         Arc::new(material1),
     )));
 
-    let material2 = Lambertian::new(Color::new(0.4, 0.2, 0.1));
+    let material2 = Lambertian::new(SolidColor::new(Color::new(0.4, 0.2, 0.1)));
     world.add(Box::new(Sphere::new(
         Point3::new(-4., 1., 0.),
         1.0,

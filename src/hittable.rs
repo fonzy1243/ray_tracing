@@ -1,6 +1,6 @@
 use crate::aabb::*;
 use crate::interval::Interval;
-use crate::material::{Lambertian, Material};
+use crate::material::{Dielectric, Material};
 use crate::ray::Ray;
 use crate::vec3::{Point3, Vec3};
 use std::sync::Arc;
@@ -11,6 +11,8 @@ pub struct HitRecord {
     pub(crate) normal: Vec3,
     pub(crate) mat: Arc<dyn Material + Send>,
     pub(crate) t: f64,
+    pub(crate) u: f64,
+    pub(crate) v: f64,
     pub(crate) front_face: bool,
 }
 
@@ -27,6 +29,8 @@ impl HitRecord {
             normal,
             mat,
             t,
+            u: 0.,
+            v: 0.,
             front_face,
         }
     }
@@ -50,8 +54,10 @@ impl Default for HitRecord {
         Self {
             p: Point3::new(0., 0., 0.),
             normal: Vec3::new(0., 0., 0.),
-            mat: Arc::new(Lambertian::default()),
+            mat: Arc::new(Dielectric::default()),
             t: 0.,
+            u: 0.,
+            v: 0.,
             front_face: false,
         }
     }
