@@ -1,3 +1,4 @@
+use crate::bvh::*;
 use crate::camera::Camera;
 use crate::color::Color;
 use crate::hittable::Hittable;
@@ -14,6 +15,7 @@ use std::sync::Arc;
 // and written in Rust
 
 mod aabb;
+mod bvh;
 mod camera;
 mod color;
 mod hittable;
@@ -25,8 +27,6 @@ mod sphere;
 mod vec3;
 
 fn main() {
-    let r = (PI / 4.).cos();
-
     // Image
     let aspect_ratio = 16. / 9.;
     let image_width = 1200;
@@ -101,6 +101,7 @@ fn main() {
         Arc::new(material3),
     )));
 
+    world = HittableList::new(BvhNode::new(world));
     let mut camera = Camera::new(aspect_ratio, image_width, samples_per_pixel, max_depth);
 
     camera.vfov = 20.;

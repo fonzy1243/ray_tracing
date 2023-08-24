@@ -57,8 +57,27 @@ impl Default for HitRecord {
     }
 }
 
-pub trait Hittable: Sync {
+pub trait Hittable: Sync + HittableClone {
     fn hit(&self, r: Ray, ray_t: Interval, rec: &mut HitRecord) -> bool;
 
     fn bounding_box(&self) -> AABB;
+}
+
+pub trait HittableClone {
+    fn clone_box(&self) -> Box<dyn Hittable>;
+}
+
+impl<T> HittableClone for T
+where
+    T: 'static + Hittable + Clone,
+{
+    fn clone_box(&self) -> Box<dyn Hittable> {
+        Box::new(self.clone())
+    }
+}
+
+impl Clone for Box<dyn Hittable> {
+    fn clone(&self) -> Box<dyn Hittable> {
+        self.clone_box()
+    }
 }

@@ -7,6 +7,10 @@ pub fn degrees_to_radians(degrees: f64) -> f64 {
     degrees * PI / 180.
 }
 
+pub fn random_int(min: i32, max: i32) -> i32 {
+    random_double_r(min as f64, max as f64).round() as i32
+}
+
 pub fn random_double() -> f64 {
     let mut rng = rand::thread_rng();
     rng.gen_range(0f64..1.)

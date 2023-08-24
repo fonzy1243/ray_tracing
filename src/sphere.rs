@@ -41,7 +41,6 @@ impl Sphere {
         let rvec = Vec3::new(radius, radius, radius);
         let box1 = AABB::new_from_points(center - rvec, center + rvec);
         let box2 = AABB::new_from_points(center2 - rvec, center2 + rvec);
-
         Self {
             center1: center,
             radius,
