@@ -1,3 +1,5 @@
+use ray_tracing::PI;
+
 use crate::aabb::*;
 use crate::hittable::{HitRecord, Hittable};
 use crate::interval::Interval;
@@ -54,6 +56,14 @@ impl Sphere {
     fn center(&self, time: f64) -> Point3 {
         self.center1 + time * self.center_vec
     }
+
+    pub(crate) fn get_sphere_uv(p: Point3, u: &mut f64, v: &mut f64) {
+        let theta = -p.y().acos();
+        let phi = -p.z().atan2(p.x()) + PI;
+
+        *u = phi / (2. * PI);
+        *v = theta / PI;
+    }
 }
 
 impl Hittable for Sphere {
@@ -92,6 +102,7 @@ impl Hittable for Sphere {
 
         let outward_normal = (rec.p - center) / self.radius;
         rec.set_face_normal(r, outward_normal);
+        Self::get_sphere_uv(outward_normal, &mut rec.u, &mut rec.v);
         rec.mat = self.mat.clone();
 
         true
