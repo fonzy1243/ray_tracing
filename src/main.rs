@@ -26,7 +26,7 @@ mod sphere;
 mod texture;
 mod vec3;
 
-fn main() {
+fn random_spheres() {
     // Image
     let aspect_ratio = 16. / 9.;
     let image_width = 1200;
@@ -115,4 +115,8 @@ fn main() {
     camera.focus_dist = 10.;
 
     camera.render(&world);
+}
+
+fn main() {
+    random_spheres()
 }
