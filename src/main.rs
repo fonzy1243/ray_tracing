@@ -59,7 +59,7 @@ fn main() {
                 let sphere_material: Arc<dyn Material + Send> = if choose_mat < 0.8 {
                     let albedo = Color::random() * Color::random();
                     center2 = Some(center + Vec3::new(0., random_double_r(0., 0.5), 0.));
-                    Arc::new(Lambertian::new(SolidColor::new(albedo)))
+                    Arc::new(Lambertian::new_from_color(albedo))
                 } else if choose_mat < 0.95 {
                     let albedo = Color::random_range(0.5, 1.);
                     let fuzz = random_double_r(0f64, 0.5);
@@ -89,7 +89,7 @@ fn main() {
         Arc::new(material1),
     )));
 
-    let material2 = Lambertian::new(SolidColor::new(Color::new(0.4, 0.2, 0.1)));
+    let material2 = Lambertian::new_from_color(Color::new(0.4, 0.2, 0.1));
     world.add(Box::new(Sphere::new(
         Point3::new(-4., 1., 0.),
         1.0,

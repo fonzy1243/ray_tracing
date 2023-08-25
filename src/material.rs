@@ -1,7 +1,7 @@
 use crate::color::Color;
 use crate::hittable::HitRecord;
 use crate::ray::Ray;
-use crate::texture::Texture;
+use crate::texture::{SolidColor, Texture};
 use crate::vec3::Vec3;
 use ray_tracing::random_double;
 
@@ -23,6 +23,14 @@ pub struct Lambertian<T: Texture> {
 impl<T: Texture> Lambertian<T> {
     pub fn new(a: T) -> Self {
         Self { albedo: a }
+    }
+}
+
+impl Lambertian<SolidColor> {
+    pub fn new_from_color(a: Color) -> Self {
+        Self {
+            albedo: SolidColor::new(a),
+        }
     }
 }
 
