@@ -66,7 +66,7 @@ impl Default for HitRecord {
 pub trait Hittable: Sync + HittableClone {
     fn hit(&self, r: Ray, ray_t: Interval, rec: &mut HitRecord) -> bool;
 
-    fn bounding_box(&self) -> AABB;
+    fn bounding_box(&self) -> Aabb;
 }
 
 pub trait HittableClone {

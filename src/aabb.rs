@@ -4,13 +4,13 @@ use crate::ray::*;
 use crate::vec3::*;
 
 #[derive(Copy, Clone, Default)]
-pub struct AABB {
+pub struct Aabb {
     x: Interval,
     y: Interval,
     z: Interval,
 }
 
-impl AABB {
+impl Aabb {
     pub fn new(ix: Interval, iy: Interval, iz: Interval) -> Self {
         Self {
             x: ix,
@@ -64,7 +64,7 @@ impl AABB {
         true
     }
 
-    pub fn aabb(box0: AABB, box1: AABB) -> AABB {
+    pub fn aabb(box0: Aabb, box1: Aabb) -> Aabb {
         Self {
             x: Interval::new_from_intervals(box0.x, box1.x),
             y: Interval::new_from_intervals(box0.y, box1.y),

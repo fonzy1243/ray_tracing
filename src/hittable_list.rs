@@ -3,10 +3,10 @@ use crate::hittable::{HitRecord, Hittable};
 use crate::interval::Interval;
 use crate::ray::Ray;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct HittableList {
     pub objects: Vec<Box<dyn Hittable>>,
-    bbox: AABB,
+    bbox: Aabb,
 }
 
 impl HittableList {
@@ -23,16 +23,7 @@ impl HittableList {
     pub fn add(&mut self, object: Box<dyn Hittable>) {
         let object_bbox = object.bounding_box();
         self.objects.push(object);
-        self.bbox = AABB::aabb(self.bbox, object_bbox);
-    }
-}
-
-impl Default for HittableList {
-    fn default() -> Self {
-        Self {
-            objects: Vec::new(),
-            bbox: AABB::default(),
-        }
+        self.bbox = Aabb::aabb(self.bbox, object_bbox);
     }
 }
 
@@ -45,7 +36,7 @@ impl Hittable for HittableList {
         for object in &self.objects {
             if object.hit(r, Interval::new(ray_t.min, closest_so_far), &mut temp_rec) {
                 hit_anything = true;
-                closest_so_far = temp_rec.t.clone();
+                closest_so_far = temp_rec.t;
                 *rec = temp_rec.clone();
             }
         }
@@ -53,7 +44,7 @@ impl Hittable for HittableList {
         hit_anything
     }
 
-    fn bounding_box(&self) -> crate::aabb::AABB {
+    fn bounding_box(&self) -> crate::aabb::Aabb {
         self.bbox
     }
 }

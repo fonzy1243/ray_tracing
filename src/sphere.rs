@@ -15,7 +15,7 @@ pub struct Sphere {
     mat: Arc<dyn Material + Send>,
     is_moving: bool,
     center_vec: Vec3,
-    bbox: AABB,
+    bbox: Aabb,
 }
 
 impl Sphere {
@@ -28,7 +28,7 @@ impl Sphere {
             mat,
             is_moving: false,
             center_vec: Vec3::default(),
-            bbox: AABB::new_from_points(center - rvec, center + rvec),
+            bbox: Aabb::new_from_points(center - rvec, center + rvec),
         }
     }
 
@@ -39,15 +39,15 @@ impl Sphere {
         mat: Arc<dyn Material + Send>,
     ) -> Self {
         let rvec = Vec3::new(radius, radius, radius);
-        let box1 = AABB::new_from_points(center - rvec, center + rvec);
-        let box2 = AABB::new_from_points(center2 - rvec, center2 + rvec);
+        let box1 = Aabb::new_from_points(center - rvec, center + rvec);
+        let box2 = Aabb::new_from_points(center2 - rvec, center2 + rvec);
         Self {
             center1: center,
             radius,
             mat,
             is_moving: true,
             center_vec: center2 - center,
-            bbox: AABB::aabb(box1, box2),
+            bbox: Aabb::aabb(box1, box2),
         }
     }
 
@@ -97,7 +97,7 @@ impl Hittable for Sphere {
         true
     }
 
-    fn bounding_box(&self) -> AABB {
+    fn bounding_box(&self) -> Aabb {
         self.bbox
     }
 }
