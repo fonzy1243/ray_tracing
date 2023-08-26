@@ -166,17 +166,17 @@ fn two_spheres() {
     let checker =
         CheckerTexture::new_from_colors(0.8, Color::new(0.2, 0.3, 0.1), Color::new(0.9, 0.9, 0.9));
 
-    let material = Dielectric::new(1.5);
+    let material = Lambertian::new(checker);
 
     world.add(Box::new(Sphere::new(
         Point3::new(0., -10., 0.),
         10.,
-        Arc::new(material),
+        Arc::new(material.clone()),
     )));
     world.add(Box::new(Sphere::new(
         Point3::new(0., 10., 0.),
         10.,
-        Arc::new(material),
+        Arc::new(material.clone()),
     )));
 
     // world = HittableList::new(BvhNode::new(world));
@@ -217,7 +217,7 @@ fn earth() {
 }
 
 fn main() {
-    match 1 {
+    match 2 {
         1 => random_spheres(),
         2 => two_spheres(),
         3 => earth(),
