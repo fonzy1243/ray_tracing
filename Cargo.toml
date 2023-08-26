@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 rand = "0.8.5"
 rayon = "1.7.0"
+image = "0.24.7"
 
 [profile.dev]
 opt-level = 3

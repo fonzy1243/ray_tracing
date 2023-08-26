@@ -117,6 +117,110 @@ fn random_spheres() {
     camera.render(&world);
 }
 
+fn test() {
+    let mut world = HittableList::default();
+
+    let material_ground = Lambertian::new_from_color(Color::new(0.8, 0.8, 0.));
+    let material_center = Lambertian::new_from_color(Color::new(0.1, 0.2, 0.5));
+    let material_left = Dielectric::new(1.5);
+    let material_right = Metal::new(Color::new(0.8, 0.6, 0.2), 0.);
+
+    world.add(Box::new(Sphere::new(
+        Point3::new(0., -100.5, -1.),
+        100.,
+        Arc::new(material_ground),
+    )));
+    world.add(Box::new(Sphere::new(
+        Point3::new(0., -100.5, -1.),
+        100.,
+        Arc::new(material_center),
+    )));
+    world.add(Box::new(Sphere::new(
+        Point3::new(0., -100.5, -1.),
+        100.,
+        Arc::new(material_left),
+    )));
+    world.add(Box::new(Sphere::new(
+        Point3::new(0., -100.5, -1.),
+        100.,
+        Arc::new(material_left),
+    )));
+    world.add(Box::new(Sphere::new(
+        Point3::new(0., -100.5, -1.),
+        100.,
+        Arc::new(material_right),
+    )));
+
+    let mut camera = Camera::new(16. / 9., 400, 100, 50);
+    camera.vfov = 90.;
+    camera.lookfrom = Point3::new(-2., 2., 1.);
+    camera.lookat = Point3::new(0., 0., -1.);
+    camera.vup = Vec3::new(0., 1., 0.);
+
+    camera.render(&world);
+}
+
+fn two_spheres() {
+    let mut world = HittableList::default();
+
+    let checker =
+        CheckerTexture::new_from_colors(0.8, Color::new(0.2, 0.3, 0.1), Color::new(0.9, 0.9, 0.9));
+
+    let material = Dielectric::new(1.5);
+
+    world.add(Box::new(Sphere::new(
+        Point3::new(0., -10., 0.),
+        10.,
+        Arc::new(material),
+    )));
+    world.add(Box::new(Sphere::new(
+        Point3::new(0., 10., 0.),
+        10.,
+        Arc::new(material),
+    )));
+
+    // world = HittableList::new(BvhNode::new(world));
+
+    let mut camera = Camera::new(16. / 9., 600, 100, 50);
+
+    camera.vfov = 20.;
+    camera.lookfrom = Point3::new(13., 2., 3.);
+    camera.lookat = Point3::new(0., 0., 0.);
+    camera.vup = Vec3::new(0., 1., 0.);
+
+    camera.defocus_angle = 0.;
+    camera.focus_dist = 10.;
+
+    camera.render(&world);
+}
+
+fn earth() {
+    let load_texture = ImageTexture::new("earthmap.jpg");
+    match load_texture {
+        Err(_err) => (),
+        Ok(earth_texture) => {
+            let earth_surface = Lambertian::new(earth_texture);
+            let globe = Sphere::new(Point3::new(0., 0., 0.), 2., Arc::new(earth_surface));
+
+            let mut camera = Camera::new(16. / 9., 1080, 400, 50);
+
+            camera.vfov = 20.;
+            camera.lookfrom = Point3::new(0., 0., 12.);
+            camera.lookat = Point3::new(0., 0., 0.);
+            camera.vup = Vec3::new(0., 1., 0.);
+
+            camera.defocus_angle = 0.;
+
+            camera.render(&HittableList::new(Box::new(globe)));
+        }
+    }
+}
+
 fn main() {
-    random_spheres()
+    match 1 {
+        1 => random_spheres(),
+        2 => two_spheres(),
+        3 => earth(),
+        _ => test(),
+    }
 }

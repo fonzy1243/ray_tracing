@@ -5,7 +5,7 @@ use crate::texture::{SolidColor, Texture};
 use crate::vec3::Vec3;
 use ray_tracing::random_double;
 
-pub trait Material: Sync {
+pub trait Material: Sync + Send {
     fn scatter(
         &self,
         r_in: &Ray,
@@ -87,7 +87,7 @@ impl Material for Metal {
         let reflected = Vec3::reflect(r_in.direction().unit_vector(), rec.normal);
         *scattered = Ray::new_with_time(
             rec.p,
-            reflected + self.fuzz * Vec3::random_unit_vector(),
+            reflected + self.fuzz * Vec3::random_in_unit_sphere(),
             r_in.time(),
         );
         *attenuation = self.albedo;

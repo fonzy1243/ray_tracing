@@ -24,7 +24,7 @@ pub fn write_color(out: &mut dyn Write, pixel_color: Color, samples_per_pixel: i
     b = linear_to_gamma(b);
 
     // Clamp the color components to the valid range [0.0, 0.999].
-    let intensity = Interval::new(0.0, 0.999);
+    let intensity = Interval::new(0.000, 0.999);
     r = intensity.clamp(r);
     g = intensity.clamp(g);
     b = intensity.clamp(b);

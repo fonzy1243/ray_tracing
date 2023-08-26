@@ -8,7 +8,7 @@ pub fn degrees_to_radians(degrees: f64) -> f64 {
 }
 
 pub fn random_int(min: i32, max: i32) -> i32 {
-    random_double_r(min as f64, max as f64).round() as i32
+    random_double_r(min as f64, (max + 1) as f64).round() as i32
 }
 
 pub fn random_double() -> f64 {
