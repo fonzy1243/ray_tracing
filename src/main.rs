@@ -131,23 +131,23 @@ fn test() {
         Arc::new(material_ground),
     )));
     world.add(Box::new(Sphere::new(
-        Point3::new(0., -100.5, -1.),
-        100.,
+        Point3::new(0., 0., -1.),
+        0.5,
         Arc::new(material_center),
     )));
     world.add(Box::new(Sphere::new(
-        Point3::new(0., -100.5, -1.),
-        100.,
+        Point3::new(-1., 0., -1.),
+        0.5,
         Arc::new(material_left),
     )));
     world.add(Box::new(Sphere::new(
-        Point3::new(0., -100.5, -1.),
-        100.,
+        Point3::new(-1., 0., -1.),
+        -0.4,
         Arc::new(material_left),
     )));
     world.add(Box::new(Sphere::new(
-        Point3::new(0., -100.5, -1.),
-        100.,
+        Point3::new(1., 0., -1.),
+        0.5,
         Arc::new(material_right),
     )));
 
