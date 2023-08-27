@@ -57,12 +57,12 @@ impl Sphere {
         self.center1 + time * self.center_vec
     }
 
-    pub(crate) fn get_sphere_uv(p: Point3, u: &mut f64, v: &mut f64) {
+    pub(crate) fn get_sphere_uv(p: Point3, rec: &mut HitRecord) {
         let theta = -p.y().acos();
         let phi = -p.z().atan2(p.x()) + PI;
 
-        *u = phi / (2. * PI);
-        *v = theta / PI;
+        rec.u = phi / (2. * PI);
+        rec.v = theta / PI;
     }
 }
 
@@ -102,7 +102,7 @@ impl Hittable for Sphere {
 
         let outward_normal = (rec.p - center) / self.radius;
         rec.set_face_normal(r, outward_normal);
-        Self::get_sphere_uv(outward_normal, &mut rec.u, &mut rec.v);
+        Self::get_sphere_uv(outward_normal, rec);
         rec.mat = self.mat.clone();
 
         true

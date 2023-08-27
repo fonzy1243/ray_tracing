@@ -79,22 +79,31 @@ pub struct ImageTexture {
 
 impl ImageTexture {
     pub fn new<P: AsRef<Path>>(path: P) -> Result<Self, Error> {
-        let image = Reader::open(path)?.decode().ok().map(|x| x.into_rgba8());
+        let image = Reader::open(path)?.decode().ok().map(|x| x.to_rgba8());
         Ok(Self { image })
     }
 }
 
 impl Texture for ImageTexture {
-    fn value(&self, mut u: f64, mut v: f64, p: Point3) -> Color {
+    fn value(&self, mut u: f64, mut v: f64, _p: Point3) -> Color {
         match &self.image {
             None => Color::new(0., 1., 1.),
             Some(image) => {
                 u = Interval::new(0., 1.).clamp(u);
                 v = 1. - Interval::new(0., 1.).clamp(v);
 
-                let i = u as u32 * image.height();
-                let j = v as u32 * image.width();
-                let pixel = image.get_pixel(i, j);
+                let mut i = (u * image.width() as f64) as u32;
+                let mut j = (v * image.height() as f64) as u32;
+
+                if i >= image.width() {
+                    i = image.width() - 1;
+                }
+
+                if j >= image.height() {
+                    j = image.height() - 1;
+                }
+
+                let pixel = image.get_pixel(i, j).0;
 
                 let color_scale = 1. / 255.;
                 Color::new(

@@ -169,7 +169,7 @@ impl Camera {
         let pixel_sample = pixel_center + self.pixel_sample_square();
 
         let ray_origin = if self.defocus_angle <= 0. {
-            pixel_center
+            self.center
         } else {
             self.defocus_disk_sample()
         };

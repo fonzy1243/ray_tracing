@@ -125,15 +125,18 @@ fn test() {
     let material_left = Dielectric::new(1.5);
     let material_right = Metal::new(Color::new(0.8, 0.6, 0.2), 0.);
 
+    let sphere1_material: Arc<dyn Material + Send> = Arc::new(material_ground);
+    let sphere2_material: Arc<dyn Material + Send> = Arc::new(material_center);
+
     world.add(Box::new(Sphere::new(
         Point3::new(0., -100.5, -1.),
         100.,
-        Arc::new(material_ground),
+        sphere1_material,
     )));
     world.add(Box::new(Sphere::new(
         Point3::new(0., 0., -1.),
         0.5,
-        Arc::new(material_center),
+        sphere2_material,
     )));
     world.add(Box::new(Sphere::new(
         Point3::new(-1., 0., -1.),
@@ -200,7 +203,11 @@ fn earth() {
         Err(_err) => (),
         Ok(earth_texture) => {
             let earth_surface = Lambertian::new(earth_texture);
-            let globe = Sphere::new(Point3::new(0., 0., 0.), 2., Arc::new(earth_surface));
+            let globe_mat: Arc<dyn Material + Send> = Arc::new(earth_surface);
+            let globe = Sphere::new(Point3::new(0., 0., 0.), 2., globe_mat);
+
+            let mut world = HittableList::default();
+            world.add(Box::new(globe));
 
             let mut camera = Camera::new(16. / 9., 1080, 400, 50);
 
@@ -211,13 +218,13 @@ fn earth() {
 
             camera.defocus_angle = 0.;
 
-            camera.render(&HittableList::new(Box::new(globe)));
+            camera.render(&world);
         }
     }
 }
 
 fn main() {
-    match 2 {
+    match 3 {
         1 => random_spheres(),
         2 => two_spheres(),
         3 => earth(),
