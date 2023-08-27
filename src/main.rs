@@ -21,6 +21,7 @@ mod hittable;
 mod hittable_list;
 mod interval;
 mod material;
+mod perlin;
 mod ray;
 mod sphere;
 mod texture;
@@ -242,11 +243,38 @@ fn earth() {
     }
 }
 
+fn two_perlin_spheres() {
+    let mut world = HittableList::default();
+
+    let pertext = NoiseTexture::new(4.);
+    world.add(Box::new(Sphere::new(
+        Point3::new(0., -1000., 0.),
+        1000.,
+        Arc::new(Lambertian::new(pertext)),
+    )));
+    world.add(Box::new(Sphere::new(
+        Point3::new(0., 2., 0.),
+        2.,
+        Arc::new(Lambertian::new(pertext)),
+    )));
+
+    let mut camera = Camera::new(16. / 9., 400, 100, 50);
+
+    camera.vfov = 20.;
+    camera.lookfrom = Point3::new(13., 2., 3.);
+    camera.lookat = Point3::new(0., 0., 0.);
+    camera.vup = Vec3::new(0., 1., 0.);
+
+    camera.defocus_angle = 0.;
+    camera.render(&world)
+}
+
 fn main() {
-    match 3 {
+    match 4 {
         1 => random_spheres(),
         2 => two_spheres(),
         3 => earth(),
-        _ => test2(),
+        4 => two_perlin_spheres(),
+        _ => test(),
     }
 }

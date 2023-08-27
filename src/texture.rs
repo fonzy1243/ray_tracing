@@ -1,5 +1,6 @@
 use crate::color::*;
 use crate::interval::Interval;
+use crate::perlin::Perlin;
 use crate::vec3::*;
 use image::io::Reader;
 use image::*;
@@ -115,6 +116,34 @@ impl Texture for ImageTexture {
                 Color::new(r, g, b)
             }
         }
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct NoiseTexture {
+    noise: Perlin,
+    scale: f64,
+}
+
+impl NoiseTexture {
+    pub fn new(sc: f64) -> Self {
+        Self {
+            noise: Perlin::default(),
+            scale: sc,
+        }
+    }
+}
+
+impl Default for NoiseTexture {
+    fn default() -> Self {
+        Self::new(1.)
+    }
+}
+
+impl Texture for NoiseTexture {
+    fn value(&self, _u: f64, _v: f64, p: Point3) -> Color {
+        let s = self.scale * p;
+        Color::new(1., 1., 1.) * 0.5 * (1. + (s.z() + 10. * self.noise.turb(p, 7)).sin())
     }
 }
 
