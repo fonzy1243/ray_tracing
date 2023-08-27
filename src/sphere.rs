@@ -58,8 +58,8 @@ impl Sphere {
     }
 
     pub(crate) fn get_sphere_uv(p: Point3, rec: &mut HitRecord) {
-        let theta = -p.y().acos();
-        let phi = -p.z().atan2(p.x()) + PI;
+        let theta = (-p.y()).acos();
+        let phi = (-p.z()).atan2(p.x()) + PI;
 
         rec.u = phi / (2. * PI);
         rec.v = theta / PI;

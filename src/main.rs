@@ -197,6 +197,25 @@ fn two_spheres() {
     camera.render(&world);
 }
 
+fn test2() {
+    let material = Lambertian::new_from_color(Color::new(0., 155., 70.));
+    let sphere = Box::new(Sphere::new(Point3::new(0., 0., 0.), 2., Arc::new(material)));
+
+    let mut world = HittableList::default();
+    world.add(sphere);
+
+    let mut camera = Camera::new(16. / 9., 1080, 400, 50);
+
+    camera.vfov = 20.;
+    camera.lookfrom = Point3::new(0., 0., 12.);
+    camera.lookat = Point3::new(0., 0., 0.);
+    camera.vup = Vec3::new(0., 1., 0.);
+
+    camera.defocus_angle = 0.;
+
+    camera.render(&world);
+}
+
 fn earth() {
     let load_texture = ImageTexture::new("earthmap.jpg");
     match load_texture {
@@ -228,6 +247,6 @@ fn main() {
         1 => random_spheres(),
         2 => two_spheres(),
         3 => earth(),
-        _ => test(),
+        _ => test2(),
     }
 }

@@ -73,13 +73,14 @@ impl<T: Texture, U: Texture> Texture for CheckerTexture<T, U> {
     }
 }
 
+#[derive(Clone, Debug)]
 pub struct ImageTexture {
-    image: Option<RgbaImage>,
+    image: Option<RgbImage>,
 }
 
 impl ImageTexture {
     pub fn new<P: AsRef<Path>>(path: P) -> Result<Self, Error> {
-        let image = Reader::open(path)?.decode().ok().map(|x| x.to_rgba8());
+        let image = Reader::open(path)?.decode().ok().map(|x| x.to_rgb8());
         Ok(Self { image })
     }
 }
@@ -106,12 +107,42 @@ impl Texture for ImageTexture {
                 let pixel = image.get_pixel(i, j).0;
 
                 let color_scale = 1. / 255.;
-                Color::new(
-                    color_scale * pixel[0] as f64,
-                    color_scale * pixel[1] as f64,
-                    color_scale * pixel[2] as f64,
-                )
+
+                let r = color_scale * pixel[0] as f64;
+                let g = color_scale * pixel[1] as f64;
+                let b = color_scale * pixel[2] as f64;
+
+                Color::new(r, g, b)
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_image() {
+        let image_texture = ImageTexture::new("test_image.png");
+        assert!(image_texture.is_ok(), "Image failed to load.");
+        assert!(
+            image_texture.as_ref().is_ok_and(|x| x.image.is_some()),
+            "Image loaded but struct has None."
+        );
+        assert!(
+            if let Some(image) = &image_texture.unwrap().image {
+                if image.get_pixel(330, 830).0 == [255, 255, 255] {
+                    true
+                } else {
+                    let pixel = image.get_pixel(330, 830).0;
+                    eprintln!("R: {} G: {} B: {}", pixel[0], pixel[1], pixel[2]);
+                    false
+                }
+            } else {
+                false
+            },
+            "Image color does not match."
+        );
     }
 }
