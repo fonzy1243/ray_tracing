@@ -1,6 +1,6 @@
 use crate::vec3::*;
 
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, Default, PartialEq)]
 pub struct Ray {
     orig: Point3,
     dir: Vec3,
@@ -12,7 +12,13 @@ impl Ray {
         Self { orig, dir, tm: 0. }
     }
 
-    pub fn new_with_time(orig: Point3, dir: Vec3, time: f64) -> Self { Self { orig, dir, tm: time } }
+    pub fn new_with_time(orig: Point3, dir: Vec3, time: f64) -> Self {
+        Self {
+            orig,
+            dir,
+            tm: time,
+        }
+    }
 
     pub fn at(self, t: f64) -> Point3 {
         self.orig + t * self.dir
@@ -26,5 +32,7 @@ impl Ray {
         self.dir
     }
 
-    pub fn time(self) -> f64 { self.tm }
+    pub fn time(self) -> f64 {
+        self.tm
+    }
 }

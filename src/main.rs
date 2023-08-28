@@ -8,8 +8,10 @@ use crate::quad::*;
 use crate::sphere::Sphere;
 use crate::texture::*;
 use crate::vec3::{Point3, Vec3};
+use material::DiffuseLight;
 use ray_tracing::{random_double, random_double_r, INFINITY, PI};
 use std::sync::Arc;
+use std::time::Instant;
 
 // Based on the book "Ray Tracing in One Weekend": https://raytracing.github.io/books/RayTracingInOneWeekend.html
 // and written in Rust
@@ -116,6 +118,7 @@ fn random_spheres() {
 
     camera.defocus_angle = 0.6;
     camera.focus_dist = 10.;
+    camera.background = Color::new(0.7, 0.8, 1.);
 
     camera.render(&world);
 }
@@ -162,6 +165,7 @@ fn test() {
     camera.lookfrom = Point3::new(-2., 2., 1.);
     camera.lookat = Point3::new(0., 0., -1.);
     camera.vup = Vec3::new(0., 1., 0.);
+    camera.background = Color::new(0.7, 0.8, 1.);
 
     camera.render(&world);
 }
@@ -193,6 +197,7 @@ fn two_spheres() {
     camera.lookfrom = Point3::new(13., 2., 3.);
     camera.lookat = Point3::new(0., 0., 0.);
     camera.vup = Vec3::new(0., 1., 0.);
+    camera.background = Color::new(0.7, 0.8, 1.);
 
     camera.defocus_angle = 0.;
     camera.focus_dist = 10.;
@@ -213,6 +218,7 @@ fn test2() {
     camera.lookfrom = Point3::new(0., 0., 12.);
     camera.lookat = Point3::new(0., 0., 0.);
     camera.vup = Vec3::new(0., 1., 0.);
+    camera.background = Color::new(0.7, 0.8, 1.);
 
     camera.defocus_angle = 0.;
 
@@ -237,6 +243,7 @@ fn earth() {
             camera.lookfrom = Point3::new(0., 0., 12.);
             camera.lookat = Point3::new(0., 0., 0.);
             camera.vup = Vec3::new(0., 1., 0.);
+            camera.background = Color::new(0.7, 0.8, 1.);
 
             camera.defocus_angle = 0.;
 
@@ -266,6 +273,7 @@ fn two_perlin_spheres() {
     camera.lookfrom = Point3::new(13., 2., 3.);
     camera.lookat = Point3::new(0., 0., 0.);
     camera.vup = Vec3::new(0., 1., 0.);
+    camera.background = Color::new(0.7, 0.8, 1.);
 
     camera.defocus_angle = 0.;
     camera.render(&world)
@@ -317,6 +325,121 @@ fn quads() {
     cam.lookfrom = Point3::new(0., 0., 9.);
     cam.lookat = Point3::new(0., 0., 0.);
     cam.vup = Vec3::new(0., 1., 0.);
+    cam.background = Color::new(0.7, 0.8, 1.);
+
+    cam.defocus_angle = 0.;
+
+    cam.render(&world);
+}
+
+fn simple_light() {
+    let mut world = HittableList::default();
+
+    let pertext = Arc::new(Lambertian::new(NoiseTexture::new(4.)));
+    world.add(Box::new(Sphere::new(
+        Point3::new(0., -1000., 0.),
+        1000.,
+        pertext.clone(),
+    )));
+    world.add(Box::new(Sphere::new(
+        Point3::new(0., 2., 0.),
+        2.,
+        pertext.clone(),
+    )));
+
+    let difflight = Arc::new(DiffuseLight::new_with_color(Color::new(4., 4., 4.)));
+    world.add(Box::new(Sphere::new(
+        Point3::new(0., 7., 0.),
+        2.,
+        difflight.clone(),
+    )));
+    world.add(Box::new(Quad::new(
+        Point3::new(3., 1., -2.),
+        Vec3::new(2., 0., 0.),
+        Vec3::new(0., 2., 0.),
+        difflight.clone(),
+    )));
+
+    world = HittableList::new(BvhNode::new(world));
+
+    let mut cam = Camera::new(16. / 9., 1600, 1500, 50);
+
+    cam.background = Color::new(0., 0., 0.);
+    cam.vfov = 20.;
+    cam.lookfrom = Point3::new(26., 3., 6.);
+    cam.lookat = Point3::new(0., 2., 0.);
+    cam.vup = Vec3::new(0., 1., 0.);
+
+    cam.defocus_angle = 0.;
+
+    cam.render(&world);
+}
+
+fn cornell_box() {
+    let mut world = HittableList::default();
+
+    let red = Arc::new(Lambertian::new_from_color(Color::new(0.65, 0.05, 0.05)));
+    let white = Arc::new(Lambertian::new_from_color(Color::new(0.73, 0.73, 0.73)));
+    let green = Arc::new(Lambertian::new_from_color(Color::new(0.12, 0.45, 0.15)));
+    let light = Arc::new(DiffuseLight::new_with_color(Color::new(15., 15., 15.)));
+
+    world.add(Box::new(Quad::new(
+        Point3::new(555., 0., 0.),
+        Vec3::new(0., 555., 0.),
+        Vec3::new(0., 0., 555.),
+        green,
+    )));
+    world.add(Box::new(Quad::new(
+        Point3::new(0., 0., 0.),
+        Vec3::new(0., 555., 0.),
+        Vec3::new(0., 0., 555.),
+        red,
+    )));
+    world.add(Box::new(Quad::new(
+        Point3::new(343., 554., 332.),
+        Vec3::new(-130., 0., 0.),
+        Vec3::new(0., 0., -105.),
+        light,
+    )));
+    world.add(Box::new(Quad::new(
+        Point3::new(0., 0., 0.),
+        Vec3::new(555., 0., 0.),
+        Vec3::new(0., 0., 555.),
+        white.clone(),
+    )));
+    world.add(Box::new(Quad::new(
+        Point3::new(555., 555., 555.),
+        Vec3::new(-555., 0., 0.),
+        Vec3::new(0., 0., -555.),
+        white.clone(),
+    )));
+    world.add(Box::new(Quad::new(
+        Point3::new(0., 0., 555.),
+        Vec3::new(555., 0., 0.),
+        Vec3::new(0., 555., 0.),
+        white.clone(),
+    )));
+
+    world.add(r#box(
+        Point3::new(130., 0., 65.),
+        Point3::new(295., 165., 230.),
+        white.clone(),
+    ));
+    world.add(r#box(
+        Point3::new(265., 0., 295.),
+        Point3::new(430., 330., 460.),
+        white.clone(),
+    ));
+
+    world = HittableList::new(BvhNode::new(world));
+
+    let mut cam = Camera::new(1., 600, 20000, 50);
+    cam.background = Color::default();
+
+    cam.vfov = 40.;
+    cam.lookfrom = Point3::new(278., 278., -800.);
+    cam.lookat = Point3::new(278., 278., 0.);
+    cam.vup = Vec3::new(0., 1., 0.);
 
     cam.defocus_angle = 0.;
 
@@ -324,12 +447,16 @@ fn quads() {
 }
 
 fn main() {
-    match 5 {
+    let before = Instant::now();
+    match 7 {
         1 => random_spheres(),
         2 => two_spheres(),
         3 => earth(),
         4 => two_perlin_spheres(),
         5 => quads(),
+        6 => simple_light(),
+        7 => cornell_box(),
         _ => test(),
     }
+    eprintln!("Elapsed time: {:.2?}", before.elapsed());
 }

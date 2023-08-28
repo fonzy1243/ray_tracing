@@ -2,7 +2,7 @@ use crate::color::Color;
 use crate::hittable::HitRecord;
 use crate::ray::Ray;
 use crate::texture::{SolidColor, Texture};
-use crate::vec3::Vec3;
+use crate::vec3::{Point3, Vec3};
 use ray_tracing::random_double;
 
 pub trait Material: Sync + Send {
@@ -13,6 +13,10 @@ pub trait Material: Sync + Send {
         attenuation: &mut Color,
         scattered: &mut Ray,
     ) -> bool;
+
+    fn emitted(&self, _u: f64, _v: f64, _p: Point3) -> Color {
+        Color::default()
+    }
 }
 
 #[derive(Clone, Copy, Default)]
@@ -153,5 +157,39 @@ impl Material for Dielectric {
 
         *scattered = Ray::new_with_time(rec.p, direction, r_in.time());
         true
+    }
+}
+
+pub struct DiffuseLight<T: Texture> {
+    emit: T,
+}
+
+impl<T: Texture> DiffuseLight<T> {
+    pub fn new(a: T) -> Self {
+        Self { emit: a }
+    }
+}
+
+impl DiffuseLight<SolidColor> {
+    pub fn new_with_color(c: Color) -> Self {
+        Self {
+            emit: SolidColor::new(c),
+        }
+    }
+}
+
+impl<T: Texture> Material for DiffuseLight<T> {
+    fn scatter(
+        &self,
+        _r_in: &Ray,
+        _rec: &HitRecord,
+        _attenuation: &mut Color,
+        _scattered: &mut Ray,
+    ) -> bool {
+        false
+    }
+
+    fn emitted(&self, u: f64, v: f64, p: Point3) -> Color {
+        self.emit.value(u, v, p)
     }
 }
