@@ -4,6 +4,7 @@ use crate::color::Color;
 use crate::hittable::Hittable;
 use crate::hittable_list::HittableList;
 use crate::material::{Dielectric, Lambertian, Material, Metal};
+use crate::quad::*;
 use crate::sphere::Sphere;
 use crate::texture::*;
 use crate::vec3::{Point3, Vec3};
@@ -22,6 +23,7 @@ mod hittable_list;
 mod interval;
 mod material;
 mod perlin;
+mod quad;
 mod ray;
 mod sphere;
 mod texture;
@@ -269,12 +271,65 @@ fn two_perlin_spheres() {
     camera.render(&world)
 }
 
+fn quads() {
+    let mut world = HittableList::default();
+
+    let left_red = Arc::new(Lambertian::new_from_color(Color::new(1., 0.2, 0.2)));
+    let back_green = Arc::new(Lambertian::new_from_color(Color::new(0.2, 1., 0.2)));
+    let right_blue = Arc::new(Lambertian::new_from_color(Color::new(0.2, 0.2, 1.)));
+    let upper_orange = Arc::new(Lambertian::new_from_color(Color::new(1., 0.5, 0.)));
+    let lower_teal = Arc::new(Lambertian::new_from_color(Color::new(0.2, 0.8, 0.8)));
+
+    world.add(Box::new(Quad::new(
+        Point3::new(-3., -2., 5.),
+        Vec3::new(0., 0., -4.),
+        Vec3::new(0., 4., 0.),
+        left_red,
+    )));
+    world.add(Box::new(Quad::new(
+        Point3::new(-2., -2., 0.),
+        Vec3::new(4., 0., 0.),
+        Vec3::new(0., 4., 0.),
+        back_green,
+    )));
+    world.add(Box::new(Quad::new(
+        Point3::new(3., -2., 1.),
+        Vec3::new(0., 0., 4.),
+        Vec3::new(0., 4., 0.),
+        right_blue,
+    )));
+    world.add(Box::new(Quad::new(
+        Point3::new(-2., 3., 1.),
+        Vec3::new(4., 0., 0.),
+        Vec3::new(0., 0., 4.),
+        upper_orange,
+    )));
+    world.add(Box::new(Quad::new(
+        Point3::new(-2., -3., 5.),
+        Vec3::new(4., 0., 0.),
+        Vec3::new(0., 0., -4.),
+        lower_teal,
+    )));
+
+    let mut cam = Camera::new(1., 800, 500, 50);
+
+    cam.vfov = 80.;
+    cam.lookfrom = Point3::new(0., 0., 9.);
+    cam.lookat = Point3::new(0., 0., 0.);
+    cam.vup = Vec3::new(0., 1., 0.);
+
+    cam.defocus_angle = 0.;
+
+    cam.render(&world);
+}
+
 fn main() {
-    match 4 {
+    match 5 {
         1 => random_spheres(),
         2 => two_spheres(),
         3 => earth(),
         4 => two_perlin_spheres(),
+        5 => quads(),
         _ => test(),
     }
 }
