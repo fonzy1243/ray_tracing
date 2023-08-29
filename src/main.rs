@@ -1,7 +1,7 @@
 use crate::bvh::*;
 use crate::camera::Camera;
 use crate::color::Color;
-use crate::hittable::Hittable;
+use crate::hittable::*;
 use crate::hittable_list::HittableList;
 use crate::material::{Dielectric, Lambertian, Material, Metal};
 use crate::quad::*;
@@ -420,20 +420,27 @@ fn cornell_box() {
         white.clone(),
     )));
 
-    world.add(r#box(
-        Point3::new(130., 0., 65.),
-        Point3::new(295., 165., 230.),
+    let mut box1 = r#box(
+        Point3::new(0., 0., 0.),
+        Point3::new(165., 330., 165.),
         white.clone(),
-    ));
-    world.add(r#box(
-        Point3::new(265., 0., 295.),
-        Point3::new(430., 330., 460.),
+    );
+    box1 = Box::new(RotateY::new(box1, 15.));
+    box1 = Box::new(Translate::new(box1, Vec3::new(265., 0., 295.)));
+    world.add(box1);
+
+    let mut box2 = r#box(
+        Point3::new(0., 0., 0.),
+        Point3::new(165., 165., 165.),
         white.clone(),
-    ));
+    );
+    box2 = Box::new(RotateY::new(box2, -18.));
+    box2 = Box::new(Translate::new(box2, Vec3::new(130., 0., 65.)));
+    world.add(box2);
 
     world = HittableList::new(BvhNode::new(world));
 
-    let mut cam = Camera::new(1., 600, 20000, 50);
+    let mut cam = Camera::new(1., 600, 5000, 50);
     cam.background = Color::default();
 
     cam.vfov = 40.;

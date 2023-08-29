@@ -1,6 +1,6 @@
 use ray_tracing::{random_double, random_double_r};
 use std::cmp::min;
-use std::ops::{Add, Div, Index, IndexMut, Mul, MulAssign, Neg, Sub};
+use std::ops::{Add, AddAssign, Div, Index, IndexMut, Mul, MulAssign, Neg, Sub};
 
 #[derive(Clone, Copy, PartialEq, Default)]
 pub struct Vec3 {
@@ -146,6 +146,12 @@ impl Add for Vec3 {
         Vec3 {
             e: [self[0] + rhs[0], self[1] + rhs[1], self[2] + rhs[2]],
         }
+    }
+}
+
+impl AddAssign for Vec3 {
+    fn add_assign(&mut self, rhs: Self) {
+        *self = *self + rhs;
     }
 }
 

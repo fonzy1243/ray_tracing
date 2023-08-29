@@ -2,12 +2,13 @@ use crate::hittable::Hittable;
 use crate::interval::*;
 use crate::ray::*;
 use crate::vec3::*;
+use std::ops::{Add, Div, Index, IndexMut, Mul, MulAssign, Neg, Sub};
 
 #[derive(Copy, Clone, Default)]
 pub struct Aabb {
-    x: Interval,
-    y: Interval,
-    z: Interval,
+    pub x: Interval,
+    pub y: Interval,
+    pub z: Interval,
 }
 
 impl Aabb {
@@ -93,5 +94,25 @@ impl Aabb {
             y: Interval::new_from_intervals(box0.y, box1.y),
             z: Interval::new_from_intervals(box0.z, box1.z),
         }
+    }
+}
+
+impl Add<Vec3> for Aabb {
+    type Output = Self;
+
+    fn add(self, rhs: Vec3) -> Self::Output {
+        Self {
+            x: self.x + rhs.x(),
+            y: self.y + rhs.y(),
+            z: self.z + rhs.z(),
+        }
+    }
+}
+
+impl Add<Aabb> for Vec3 {
+    type Output = Aabb;
+
+    fn add(self, rhs: Aabb) -> Aabb {
+        rhs + self
     }
 }

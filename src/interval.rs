@@ -1,5 +1,6 @@
 use crate::INFINITY;
 use std::cmp::min;
+use std::ops::{Add, AddAssign, Div, Index, IndexMut, Mul, MulAssign, Neg, Sub};
 
 #[derive(Clone, Copy, Default, PartialEq)]
 pub struct Interval {
@@ -59,3 +60,28 @@ const UNIVERSE: Interval = Interval {
     min: -INFINITY,
     max: INFINITY,
 };
+
+impl Add<f64> for Interval {
+    type Output = Self;
+
+    fn add(self, rhs: f64) -> Self::Output {
+        Self {
+            min: self.min + rhs,
+            max: self.max + rhs,
+        }
+    }
+}
+
+impl AddAssign<f64> for Interval {
+    fn add_assign(&mut self, rhs: f64) {
+        *self = *self + rhs;
+    }
+}
+
+impl Add<Interval> for f64 {
+    type Output = Interval;
+
+    fn add(self, rhs: Interval) -> Interval {
+        rhs + self
+    }
+}
